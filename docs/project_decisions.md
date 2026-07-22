@@ -101,3 +101,34 @@ Do not impute pollutant values immediately.
 - Maintains a transparent and reproducible workflow.
 
 ---
+## Decision 06 – Missing Value Imputation Strategy
+
+**Decision**
+
+Use **median imputation** for numerical pollutant features.
+
+**Reason**
+
+Histogram analysis showed that the pollutant variables are heavily right-skewed and contain extreme values. The median is less sensitive to outliers than the mean and therefore provides a more robust estimate for missing values.
+
+**Impact**
+
+- Preserves the overall distribution of the data.
+- Reduces the influence of extreme pollution events during imputation.
+- Produces a more reliable dataset for machine learning.
+## Decision 07 – Save Processed Dataset Separately
+
+**Decision**
+
+Save the cleaned dataset as `data/processed/clean_air_quality.csv`.
+
+**Reason**
+
+- Preserve the original raw dataset.
+- Ensure preprocessing is reproducible.
+- Provide a clean input for EDA and model training.
+
+**Impact**
+
+- Creates a clear separation between raw and processed data.
+- Improves project organization and reproducibility.
