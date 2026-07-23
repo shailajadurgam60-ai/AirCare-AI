@@ -132,3 +132,20 @@ Save the cleaned dataset as `data/processed/clean_air_quality.csv`.
 
 - Creates a clear separation between raw and processed data.
 - Improves project organization and reproducibility.
+
+## Decision 08 – Retain Correlated Pollutant Features
+
+**Decision**
+
+Retain all pollutant features despite high correlations between some variables.
+
+**Reason**
+
+- Correlation analysis identified strong relationships between NO and NOx, and between Benzene and Toluene.
+- The planned baseline models (Random Forest and other tree-based algorithms) are generally robust to multicollinearity.
+- Removing correlated features at this stage could discard useful predictive information.
+
+**Impact**
+
+- Preserves potentially valuable environmental information.
+- Simplifies the initial modeling process while allowing future feature selection if needed.
