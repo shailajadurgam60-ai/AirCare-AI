@@ -7,7 +7,9 @@ import streamlit as st
 # -------------------------------
 @st.cache_data
 def load_data():
-    return pd.read_csv("../data/processed/clean_air_quality.csv")
+    df = pd.read_csv("../data/processed/clean_air_quality.csv")
+    df["Date"] = pd.to_datetime(df["Date"])
+    return df
 
 
 # -------------------------------
@@ -40,6 +42,7 @@ def load_feature_columns():
 
 
 from datetime import datetime
+import pandas as pd
 
 
 def get_season(month):
@@ -49,33 +52,29 @@ def get_season(month):
     elif month in [3, 4, 5]:
         return "Summer"
     elif month in [6, 7, 8, 9]:
-        return "Monsoon"
+            return "Monsoon"
     else:
         return "Post-Monsoon"
 
 
 def prepare_input(
-    selected_date,
     city,
-    pm25,
-    pm10,
-    no,
-    no2,
-    nox,
-    nh3,
-    co,
-    so2,
-    o3,
-    benzene,
-    toluene,
+    pollutants,
     city_encoder,
     season_encoder,
-    feature_columns
+    feature_columns,
+    date=None
 ):
+    """
+    Prepare model input using live pollutant data.
+    """
 
-    year = selected_date.year
-    month = selected_date.month
-    day = selected_date.day
+    if date is None:
+     date = datetime.now()
+
+    year = date.year
+    month = date.month
+    day = date.day
 
     season = get_season(month)
 
@@ -83,37 +82,113 @@ def prepare_input(
     season_encoded = season_encoder.transform([season])[0]
 
     input_df = pd.DataFrame([{
-    "City": city_encoded,
-    "PM2.5": pm25,
-    "PM10": pm10,
-    "NO": no,
-    "NO2": no2,
-    "NOx": nox,
-    "NH3": nh3,
-    "CO": co,
-    "SO2": so2,
-    "O3": o3,
-    "Benzene": benzene,
-    "Toluene": toluene,
-    "Year": year,
-    "Month": month,
-    "Day": day,
-    "Season": season_encoded
+        "City": city_encoded,
+        "PM2.5": pollutants["pm2_5"],
+        "PM10": pollutants["pm10"],
+        "NO": pollutants["no"],
+        "NO2": pollutants["no2"],
+        "NH3": pollutants["nh3"],
+        "CO": pollutants["co"],
+        "SO2": pollutants["so2"],
+        "O3": pollutants["o3"],
+        "Year": year,
+        "Month": month,
+        "Day": day,
+        "Season": season_encoded
     }])
-
-    input_df = input_df[feature_columns]
 
     return input_df[feature_columns]
 def get_aqi_category(aqi):
+    """
+    Return AQI category based on the predicted AQI value.
+    """
+
     if aqi <= 50:
-        return "Good"
+        return "Good 🟢"
+
     elif aqi <= 100:
-        return "Satisfactory"
+        return "Satisfactory 🟡"
+
     elif aqi <= 200:
-        return "Moderate"
+        return "Moderately Polluted 🟠"
+
     elif aqi <= 300:
-        return "Poor"
+        return "Poor 🔴"
+
     elif aqi <= 400:
-        return "Very Poor"
+        return "Very Poor 🟣"
+
     else:
-        return "Severe"
+        return "Severe ⚫"
+def get_live_aqi_label(api_aqi):
+    mapping = {
+        1: "Good 🟢",
+        2: "Fair 🟡",
+        3: "Moderate 🟠",
+        4: "Poor 🔴",
+        5: "Very Poor ⚫",
+    }
+    return mapping.get(api_aqi, "Unknown")
+
+
+def get_live_aqi_message(api_aqi):
+    if api_aqi == 1:
+        return "Air quality is good. Normal outdoor activities are fine."
+    elif api_aqi == 2:
+        return "Air quality is fair. Sensitive people should watch for symptoms."
+    elif api_aqi == 3:
+        return "Air quality is moderate. Reduce prolonged outdoor exertion if possible."
+    elif api_aqi == 4:
+        return "Air quality is poor. Limit outdoor activity and stay alert."
+    elif api_aqi == 5:
+        return "Air quality is very poor. Stay indoors as much as possible."
+    return "AQI level unavailable."
+def get_pollutant_status(pollutant, value):
+
+    limits = {
+        "pm2_5": [(15, "🟢 Excellent"),
+                  (35, "🟡 Moderate"),
+                  (75, "🟠 Poor"),
+                  (float("inf"), "🔴 Very Poor")],
+
+        "pm10": [(50, "🟢 Excellent"),
+                 (100, "🟡 Moderate"),
+                 (250, "🟠 Poor"),
+                 (float("inf"), "🔴 Very Poor")],
+
+        "co": [(4400, "🟢 Excellent"),
+               (9400, "🟡 Moderate"),
+               (12400, "🟠 Poor"),
+               (float("inf"), "🔴 Very Poor")],
+
+        "no2": [(40, "🟢 Excellent"),
+                (80, "🟡 Moderate"),
+                (180, "🟠 Poor"),
+                (float("inf"), "🔴 Very Poor")],
+
+        "so2": [(40, "🟢 Excellent"),
+                (80, "🟡 Moderate"),
+                (380, "🟠 Poor"),
+                (float("inf"), "🔴 Very Poor")],
+
+        "o3": [(60, "🟢 Excellent"),
+               (100, "🟡 Moderate"),
+               (180, "🟠 Poor"),
+               (float("inf"), "🔴 Very Poor")],
+
+        "nh3": [(200, "🟢 Excellent"),
+                (400, "🟡 Moderate"),
+                (800, "🟠 Poor"),
+                (float("inf"), "🔴 Very Poor")],
+
+        "no": [(40, "🟢 Excellent"),
+               (80, "🟡 Moderate"),
+               (180, "🟠 Poor"),
+               (float("inf"), "🔴 Very Poor")]
+    }
+
+    for threshold, status in limits[pollutant]:
+        if value <= threshold:
+            return status
+
+    return "Unknown"
