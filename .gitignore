@@ -216,4 +216,3 @@ __marimo__/
 
 # Streamlit
 app/.streamlit/secrets.toml
-models/aircare_rf_model.pkl
