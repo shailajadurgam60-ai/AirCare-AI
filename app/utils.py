@@ -1,6 +1,7 @@
 import joblib
 import pandas as pd
 import streamlit as st
+from pathlib import Path
 
 # -------------------------------
 # Load Dataset
@@ -15,9 +16,11 @@ def load_data():
 # -------------------------------
 # Load ML Model
 # -------------------------------
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 @st.cache_resource
 def load_model():
-    return joblib.load("/home/user/Documents/MLModels/aircare_rf_model.pkl")
+    return joblib.load(BASE_DIR / "models" / "aircare_rf_model.pkl")
 
 
 # -------------------------------
@@ -26,19 +29,17 @@ def load_model():
 import os
 
 @st.cache_resource
-
-@st.cache_resource
 def load_city_encoder():
-    return joblib.load("../models/label_encoder_city.pkl")
+    return joblib.load(BASE_DIR / "models" / "label_encoder_city.pkl")
 
 
 @st.cache_resource
 def load_season_encoder():
-    return joblib.load("../models/label_encoder_season.pkl")
+    return joblib.load(BASE_DIR / "models" / "label_encoder_season.pkl")
 
 @st.cache_resource
 def load_feature_columns():
-    return joblib.load("../models/feature_columns.pkl")
+    return joblib.load(BASE_DIR / "models" / "feature_columns.pkl")
 
 
 from datetime import datetime
