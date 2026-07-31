@@ -154,15 +154,10 @@ AirCare AI bridges this gap by integrating:
 • Weather-aware AQI prediction
 """)
     st.divider()
-
-    st.success(
-    "AirCare AI demonstrates an end-to-end Machine Learning workflow combining data preprocessing, predictive modeling, API integration, and interactive visualization."
-)
-
     st.caption(
     "Developed as a Machine Learning portfolio project using Python, Scikit-learn, Streamlit, Plotly, and the OpenWeather API."
 )
-st.success(
+    st.success(
     """
 🎯 AirCare AI demonstrates an end-to-end Machine Learning pipeline,
 combining historical data analysis, real-time API integration,
