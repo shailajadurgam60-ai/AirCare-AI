@@ -1,4 +1,5 @@
 import os
+import requests
 import streamlit as st
 
 API_KEY = os.getenv("OPENWEATHER_API_KEY")

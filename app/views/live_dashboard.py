@@ -148,9 +148,8 @@ def show_live_dashboard():
                  st.write(advisory["Respiratory Patients"])
     
           except Exception as e:
-            st.error(
-    "Unable to retrieve live air quality data. Please check your internet connection or try another city."
-)
+
+              st.exception(e)
     st.divider()
    
     
