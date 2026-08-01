@@ -1,6 +1,11 @@
 # 🌿 AirCare AI
 
 > **An Intelligent Air Quality Monitoring & Health Advisory System powered by Machine Learning and Real-Time Environmental Data.**
+## 🚀 Live Demo
+
+👉 **Try the application here:**
+
+**https://aircare-ai-alr7.onrender.com**
 
 AirCare AI combines a **Random Forest Machine Learning model** trained on historical Indian air quality data with **real-time OpenWeather APIs** to provide live AQI monitoring, pollutant analysis, historical AQI prediction, and personalized health recommendations through an interactive Streamlit dashboard.
 
