@@ -12,9 +12,11 @@ from components.footer import show_footer
 # -----------------------------
 # Page Configuration
 # -----------------------------
+from pathlib import Path
 from PIL import Image
 
-logo = Image.open("assets/logo.png")
+BASE_DIR = Path(__file__).resolve().parent
+logo = Image.open(BASE_DIR / "assets" / "logo.png")
 
 col1, col2 = st.columns([1, 6])
 
