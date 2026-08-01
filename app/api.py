@@ -1,7 +1,7 @@
-import requests
+import os
 import streamlit as st
 
-API_KEY = st.secrets["OPENWEATHER_API_KEY"]
+API_KEY = st.secrets.get("OPENWEATHER_API_KEY") or os.getenv("OPENWEATHER_API_KEY")
 @st.cache_data(ttl=86400)
 def get_coordinates(city):
     url = (
