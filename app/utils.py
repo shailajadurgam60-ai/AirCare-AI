@@ -2,13 +2,13 @@ import joblib
 import pandas as pd
 import streamlit as st
 from pathlib import Path
-
+BASE_DIR = Path(__file__).resolve().parent.parent
 # -------------------------------
 # Load Dataset
 # -------------------------------
 @st.cache_data
 def load_data():
-    df = pd.read_csv("../data/processed/clean_air_quality.csv")
+    df = pd.read_csv(BASE_DIR / "data" / "processed" / "clean_air_quality.csv")
     df["Date"] = pd.to_datetime(df["Date"])
     return df
 
@@ -16,7 +16,6 @@ def load_data():
 # -------------------------------
 # Load ML Model
 # -------------------------------
-BASE_DIR = Path(__file__).resolve().parent.parent
 
 @st.cache_resource
 def load_model():
